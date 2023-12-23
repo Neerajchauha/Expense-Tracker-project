@@ -1,0 +1,138 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
+
+public class ExpenseTrackerGUI extends JFrame {
+
+    private JTextField expenseField, amountField;
+    private JComboBox<String> categoryComboBox;
+    private JButton logExpenseButton, setBudgetButton, viewExpensesButton, setReminderButton;
+
+    private Map<String, Double> expenseMap;
+    private Map<String, Double> budgetMap;
+
+    public ExpenseTrackerGUI() {
+        // Initialize data structures
+        expenseMap = new HashMap<>();
+        budgetMap = new HashMap<>();
+
+        // Set up the main frame
+        setTitle("Expense Tracker");
+        setSize(400, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new GridLayout(5, 2));
+
+        // Components
+        add(new JLabel("Expense:"));
+        expenseField = new JTextField();
+        add(expenseField);
+
+        add(new JLabel("Amount:"));
+        amountField = new JTextField();
+        add(amountField);
+
+        add(new JLabel("Category:"));
+        String[] categories = {"Food", "Utilities", "Entertainment", "Others"};
+        categoryComboBox = new JComboBox<>(categories);
+        add(categoryComboBox);
+
+        logExpenseButton = new JButton("Log Expense");
+        logExpenseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                logExpense();
+            }
+        });
+        add(logExpenseButton);
+
+        setBudgetButton = new JButton("Set Budget");
+        setBudgetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setBudget();
+            }
+        });
+        add(setBudgetButton);
+
+        viewExpensesButton = new JButton("View Expenses");
+        viewExpensesButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                viewExpenses();
+            }
+        });
+        add(viewExpensesButton);
+
+        setReminderButton = new JButton("Set Reminder");
+        setReminderButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setReminder();
+            }
+        });
+        add(setReminderButton);
+
+        // Display the frame
+        setVisible(true);
+    }
+
+    private void logExpense() {
+        String expense = expenseField.getText();
+        double amount = Double.parseDouble(amountField.getText());
+        String category = (String) categoryComboBox.getSelectedItem();
+
+        // Update expenseMap
+        if (expenseMap.containsKey(category)) {
+            expenseMap.put(category, expenseMap.get(category) + amount);
+        } else {
+            expenseMap.put(category, amount);
+        }
+
+        // Display a confirmation message
+        JOptionPane.showMessageDialog(this, "Expense logged successfully!");
+
+        // Clear input fields
+        expenseField.setText("");
+        amountField.setText("");
+    }
+
+    private void setBudget() {
+        String category = (String) categoryComboBox.getSelectedItem();
+        double budget = Double.parseDouble(JOptionPane.showInputDialog(this, "Enter budget for " + category + ":"));
+
+        // Update budgetMap
+        budgetMap.put(category, budget);
+
+        // Display a confirmation message
+        JOptionPane.showMessageDialog(this, "Budget set successfully!");
+    }
+
+    private void viewExpenses() {
+        // Display a summary of expenses
+        StringBuilder summary = new StringBuilder("Expense Summary:\n");
+        for (Map.Entry<String, Double> entry : expenseMap.entrySet()) {
+            summary.append(entry.getKey()).append(": $").append(entry.getValue()).append("\n");
+        }
+
+        // Display a chart (you can enhance this part)
+        // For simplicity, just display the total expenses for each category
+        JOptionPane.showMessageDialog(this, summary.toString());
+    }
+
+    private void setReminder() {
+        // Placeholder for reminder feature
+        JOptionPane.showMessageDialog(this, "Reminder feature is under development!");
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new ExpenseTrackerGUI();
+            }
+        });
+    }
+}
